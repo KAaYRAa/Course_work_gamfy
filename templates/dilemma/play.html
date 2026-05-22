@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Дилема — Gamfy</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'dilemma/dilemma.css' %}">
+</head>
+<body class="bg-[#050505] min-h-screen text-white flex flex-col items-center justify-center p-6 font-sans">
+
+    {% csrf_token %} 
+    <a href="{% url 'games:home' %}" id="back-home" class="absolute top-10 left-10 text-white/30 hover:text-white text-[10px] uppercase tracking-[0.3em] transition-all z-50">
+        ← На головну
+    </a>
+
+    <div id="setup" class="text-center">
+        <h1 class="text-6xl font-black mb-6 uppercase tracking-tighter text-orange-500">Дилема</h1>
+        <p class="text-white/30 uppercase tracking-[0.3em] text-[10px] mb-12 text-center max-w-xs mx-auto">
+            Знайдіть спільну мову з друзями у найскладніших питаннях
+        </p>
+        <button onclick="startGame()" class="bg-white text-black px-16 py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all shadow-2xl">
+            Почати гру
+        </button>
+    </div>
+
+    <div id="game" class="hidden w-full max-w-2xl text-center">
+        <div class="mb-10 flex justify-between items-center opacity-40 px-4">
+            <span id="q-counter" class="text-[10px] uppercase tracking-widest font-bold">Питання: 1</span>
+            <button onclick="finishGame()" class="text-[10px] uppercase tracking-widest hover:text-red-500 transition-colors">Завершити гру ✕</button>
+        </div>
+
+        <div id="card" class="bg-white/5 p-16 rounded-[60px] border border-white/10 shadow-2xl dilemma-card mb-12 relative overflow-hidden">
+            <h2 class="text-[10px] uppercase tracking-[0.6em] mb-12 text-orange-400 font-bold">Що ви оберете?</h2>
+            <p id="dilemma-text" class="text-3xl font-bold leading-snug italic mb-6">...</p>
+            
+            <div id="stats-overlay" class="hidden text-[11px] tracking-widest uppercase bg-black/40 py-4 rounded-2xl border border-white/5 text-orange-500 font-bold">
+                📊 <span id="community-stat">75% гравців обрали цей варіант</span>
+            </div>
+        </div>
+
+        <div id="vote-buttons" class="grid grid-cols-2 gap-4">
+            <button onclick="handleVote(false)" class="bg-white/5 border border-white/10 py-8 rounded-[30px] uppercase text-[10px] tracking-widest font-bold hover:bg-red-500/20 transition-all">Ми не згодні</button>
+            <button onclick="handleVote(true)" class="bg-orange-600 text-white py-8 rounded-[30px] uppercase text-[10px] tracking-widest font-black shadow-lg hover:bg-orange-500 transition-all">Ми згодні!</button>
+        </div>
+        
+        <button id="btn-next" onclick="showNextDilemma()" class="hidden w-full mt-4 bg-white/5 border border-white/10 text-white py-5 rounded-[30px] text-[10px] uppercase tracking-widest font-bold hover:bg-white/10 transition-all">
+            Наступне питання →
+        </button>
+    </div>
+
+    <div id="finish" class="hidden text-center w-full max-w-md flex flex-col items-center">
+        <h2 class="text-8xl font-black mb-4 uppercase italic text-orange-500">Фінал</h2>
+        <div class="bg-white/5 p-12 rounded-[50px] border border-white/10 mb-10 w-full">
+            <div id="final-stats" class="text-6xl font-black mb-2 text-white">0%</div>
+            <p class="text-[10px] uppercase tracking-[0.3em] opacity-30 mb-8">Рівень вашої згоди</p>
+            <div class="text-left space-y-4 opacity-60 text-sm">
+                <p id="total-q">Усього питань: 0</p>
+                <p id="match-q">Спільних відповідей: 0</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-4 w-full">
+            <button onclick="location.reload()" class="bg-white text-black py-6 rounded-full font-black uppercase text-[11px] tracking-widest hover:scale-105 transition-all">Грати ще раз</button>
+            <a href="{% url 'games:home' %}" class="text-[10px] uppercase tracking-[0.4em] opacity-30 hover:opacity-100 transition-all py-2">Повернутися в меню</a>
+        </div>
+    </div>
+
+    <script>
+        window.DILEMMA_DATA_URL = "{% url 'dilemma:get_data' %}";
+        window.DILEMMA_VOTE_URL = "{% url 'dilemma:vote_dilemma' %}";
+    </script>
+
+    <script src="{% static 'dilemma/dilemma.js' %}"></script>
+</body>
+</html>

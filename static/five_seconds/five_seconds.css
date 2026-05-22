@@ -1,0 +1,20 @@
+.hidden { 
+    display: none; 
+}
+
+.progress-bar { 
+    transition: width 0.1s linear; 
+}
+
+@keyframes pulse-red {
+    0%, 100% { 
+        background-color: rgba(220, 38, 38, 0.1); 
+    }
+    50% { 
+        background-color: rgba(220, 38, 38, 0.3); 
+    }
+}
+
+.timer-panic { 
+    animation: pulse-red 0.5s infinite; 
+}

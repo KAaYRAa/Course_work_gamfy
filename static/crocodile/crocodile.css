@@ -1,0 +1,22 @@
+
+
+.hidden { 
+    display: none; 
+}
+
+.timer-bar { 
+    transition: width 0.1s linear; 
+}
+
+.overtime-pulse { 
+    animation: pulse-red 1s infinite; 
+}
+
+@keyframes pulse-red {
+    0%, 100% { 
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); 
+    }
+    50% { 
+        box-shadow: 0 0 20px 10px rgba(220, 38, 38, 0.2); 
+    }
+}

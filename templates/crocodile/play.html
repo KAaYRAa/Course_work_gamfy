@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Крокодил — Gamfy</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'crocodile/crocodile.css' %}">
+</head>
+<body class="bg-[#0a1a0a] min-h-screen text-white flex flex-col items-center justify-center p-6 font-sans text-center">
+
+    {% csrf_token %} 
+    <a href="{% url 'games:home' %}" class="absolute top-10 left-10 text-white/30 hover:text-white text-[10px] uppercase tracking-widest transition-all">← На головну</a>
+
+    <div id="setup" class="w-full max-w-md bg-white/5 p-10 rounded-[40px] border border-white/10 shadow-2xl">
+        <h2 class="text-[10px] uppercase tracking-[0.4em] mb-10 opacity-50 font-bold">Налаштування гри</h2>
+        <div class="space-y-6 mb-10 text-left">
+            <div id="p-inputs" class="space-y-3">
+                <label class="block text-[9px] uppercase tracking-widest opacity-30 ml-4">Назви команд</label>
+                <input type="text" class="p-name w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" value="Група 1">
+                <input type="text" class="p-name w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" value="Група 2">
+            </div>
+            
+            <div>
+                <label class="block text-[9px] uppercase tracking-widest opacity-30 ml-4 mb-2">Рівень складності (Критерій 1)</label>
+                <select id="difficulty-select" class="w-full bg-[#132a13] border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold text-xs uppercase tracking-widest text-green-400">
+                    <option value="easy">Легкі слова (1 бал)</option>
+                    <option value="medium" selected>Середні слова (2 бали)</option>
+                    <option value="hard">Важкі слова (3 бали)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[9px] uppercase tracking-widest opacity-30 ml-4 mb-2">Тематика контенту (Критерій 2)</label>
+                <select id="category-select" class="w-full bg-[#132a13] border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold text-xs uppercase tracking-widest text-green-400">
+                    <option value="all" selected>Усі категорії разом</option>
+                    <option value="animals">Тварини</option>
+                    <option value="professions">Професії</option>
+                    <option value="items">Предмети</option>
+                    <option value="food">Їжа</option>
+                    <option value="transport">Транспорт</option>
+                    <option value="nature">Природа</option>
+                    <option value="emotions">Емоції</option>
+                    <option value="actions">Дії</option>
+                    <option value="situations">Ситуації</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[9px] uppercase tracking-widest opacity-30 ml-4">Час раунду (сек)</label>
+                <input type="number" id="round-time" value="60" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none font-bold">
+            </div>
+        </div>
+        <button onclick="startGame()" class="w-full bg-green-500 text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all">Почати</button>
+    </div>
+
+    <div id="game" class="hidden w-full max-w-2xl">
+        <div class="mb-10">
+            <div id="round-info" class="text-[10px] uppercase tracking-[0.5em] text-white/30 mb-2">Раунд 1</div>
+            <h3 id="current-player-display" class="text-2xl uppercase tracking-[0.3em] text-green-400 font-black mb-4">...</h3>
+            <div id="timer-display" class="text-5xl font-mono font-bold">01:00</div>
+            <div id="overtime-msg" class="hidden text-red-500 text-[10px] uppercase tracking-widest mt-2 font-bold">Час вийшов! Довгадуйте слово...</div>
+        </div>
+
+        <div id="card" class="bg-white/5 p-16 rounded-[60px] border border-white/10 shadow-2xl mb-12 relative overflow-hidden transition-all">
+            <p id="word-text" class="text-5xl font-black tracking-tighter italic">...</p>
+            <div id="time-bar" class="absolute bottom-0 left-0 h-1 bg-green-500 timer-bar" style="width: 100%;"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <button onclick="handleWord(false)" class="bg-white/5 border border-white/10 py-8 rounded-[30px] uppercase text-[10px] tracking-widest font-bold">Не вгадали</button>
+            <button onclick="handleWord(true)" class="bg-green-600 text-white py-8 rounded-[30px] uppercase text-[10px] tracking-widest font-black shadow-lg">Вгадали!</button>
+        </div>
+    </div>
+
+    <div id="round-results" class="hidden text-center w-full max-w-md">
+        <h2 class="text-5xl font-black mb-8 uppercase italic text-green-500">Раунд завершено</h2>
+        <div id="round-stats" class="bg-white/5 p-8 rounded-[40px] border border-white/10 mb-10 space-y-4"></div>
+        <button onclick="nextRound()" class="w-full bg-white text-black py-6 rounded-full font-black uppercase text-[11px] tracking-widest hover:scale-105 transition-all">Наступний раунд →</button>
+    </div>
+
+    <div id="finish-screen" class="hidden text-center w-full max-w-md">
+        <h2 class="text-7xl font-black mb-4 uppercase italic text-green-500">Фінал</h2>
+        <p id="winner-announce" class="text-white/40 mb-12 uppercase tracking-[0.3em] text-[10px]"></p>
+        <button onclick="location.reload()" class="bg-white text-black px-12 py-5 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-110 transition-all">В головне меню</button>
+    </div>
+
+    <script>
+        window.CROCODILE_WORDS_URL = "{% url 'crocodile:get_words' %}";
+    </script>
+
+    <script src="{% static 'crocodile/crocodile.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Гра в Свиню</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'pig/pig.css' %}">
+</head>
+<body class="bg-[#4A0404] min-h-screen text-white flex flex-col items-center justify-center p-4 font-sans overflow-hidden">
+    {% csrf_token %}
+
+    <a href="{% url 'games:home' %}" class="absolute top-10 left-10 text-white/30 hover:text-white text-xs uppercase tracking-widest transition-all z-50">
+        ← На головну
+    </a>
+
+    <div id="setup" class="w-full max-w-md bg-[#1a0101]/40 p-10 rounded-[40px] border border-white/5 shadow-2xl">
+        <h2 class="text-center text-[10px] uppercase tracking-[0.3em] mb-8 text-white/50 font-bold">Введіть учасників</h2>
+        <div id="p-list" class="space-y-4">
+            <input type="text" class="name-in w-full bg-[#1a0101]/60 border border-white/5 rounded-full px-6 py-4 outline-none text-[10px] uppercase tracking-widest focus:border-white/20 transition-all" placeholder="Гравець 1">
+            <input type="text" class="name-in w-full bg-[#1a0101]/60 border border-white/5 rounded-full px-6 py-4 outline-none text-[10px] uppercase tracking-widest focus:border-white/20 transition-all" placeholder="Gradets 2">
+        </div>
+        <button onclick="addInput()" class="w-full text-[9px] text-white/20 uppercase tracking-widest my-6 hover:text-white/40 transition-colors">+ Додати ще</button>
+        <button onclick="initGame()" class="w-full bg-white text-black py-5 rounded-full font-black uppercase tracking-[0.2em] text-[11px] shadow-xl hover:scale-105 active:scale-95 transition-all">
+            Готово
+        </button>
+    </div>
+
+    <div id="game" class="hidden w-full max-w-5xl flex flex-col items-center">
+        <div class="bg-[#1a0101]/40 w-full py-20 rounded-[60px] border border-white/5 mb-12 flex items-center justify-center px-10 min-h-[280px] shadow-2xl">
+            <h3 id="task" class="text-4xl md:text-5xl font-light tracking-wide text-center leading-tight">
+                Натисніть на гравця,<br>що програв раунд
+            </h3>
+        </div>
+
+        <div id="btns" class="flex flex-wrap justify-center gap-6 w-full"></div>
+        
+        <p class="mt-12 text-white/20 text-[9px] uppercase tracking-[0.3em]">Натисніть на картку, щоб додати літеру та оновити завдання</p>
+    </div>
+
+    <div id="finish" class="hidden text-center">
+        <h2 class="text-7xl font-black mb-12 text-red-600 uppercase tracking-tighter shadow-sm">Кінець гри</h2>
+        <div id="final-stats" class="text-xl uppercase tracking-[0.2em] space-y-4 mb-16 text-white/80"></div>
+        <button onclick="location.reload()" class="bg-white text-black px-16 py-5 rounded-full font-black uppercase tracking-[0.2em] text-[11px] hover:scale-105 transition-all">
+            Грати знову
+        </button>
+    </div>
+
+    <script>
+        window.PIG_GET_TASK_URL = "{% url 'pig:get_task' %}";
+        window.PIG_ADD_LETTER_URL = "/pig/add-letter/";
+    </script>
+
+    <script src="{% static 'pig/pig.js' %}"></script>
+</body>
+</html>

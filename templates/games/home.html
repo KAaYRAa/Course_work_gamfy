@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Gamfy</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'games/home.css' %}">
+</head>
+<body class="bg-[#4A0404] min-h-screen text-white flex items-center justify-center overflow-hidden font-sans">
+
+    <main class="relative w-full h-screen flex overflow-hidden">
+        
+        <button onclick="toggleSidebar()" class="fixed top-10 right-10 z-[70] flex flex-col gap-2.5 p-3 group bg-[#1a0101]/20 rounded-full hover:bg-[#1a0101]/40 transition-all">
+            <div class="w-9 h-0.5 bg-white transition-all duration-300"></div>
+            <div class="w-9 h-0.5 bg-white transition-all duration-300"></div>
+            <div class="w-9 h-0.5 bg-white transition-all duration-300"></div>
+        </button>
+
+        <div class="flex-1 flex flex-col items-center pt-20 px-10">
+            <form method="GET" action="{% url 'games:home' %}" class="mb-14 w-full max-w-2xl">
+                <input type="text" name="search" value="{{ search_query }}" placeholder="пошук" 
+                       class="w-full bg-[#1a0101]/40 text-white text-center py-5 rounded-full outline-none border border-white/5 focus:bg-[#1a0101]/60 focus:border-white/20 transition-all text-base font-semibold tracking-[0.3em] uppercase shadow-inner">
+            </form>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl max-h-[75vh] overflow-y-auto px-4 custom-scrollbar">
+                {% for game in games %}
+                    <a href="{% url 'games:game_detail' game.id %}" class="bg-[#1a0101]/40 hover:bg-[#1a0101]/60 transition-all cursor-pointer rounded-[40px] flex items-center justify-center h-52 border border-white/5 group shadow-xl">
+                        <span class="text-white uppercase tracking-[0.4em] text-lg font-bold group-hover:scale-105 transition-transform text-center px-6">
+                            {{ game.title }}
+                        </span>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <aside id="sidebar" class="sidebar fixed right-0 top-0 w-96 h-full bg-[#1a0101] z-60 p-12 flex flex-col shadow-2xl border-l border-white/5">
+            
+            {% if user.is_authenticated %}
+                <div class="flex flex-col items-center mt-12 mb-16">
+                    <a href="{% url 'users:profile' %}" class="w-32 h-32 bg-[#320202] rounded-full border-2 border-white/10 flex items-center justify-center overflow-hidden hover:scale-105 transition-all mb-5 shadow-inner">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" class="w-full h-full object-cover">
+                    {% else %}
+                         <span class="text-xs text-white/20 uppercase tracking-widest font-bold">User</span>
+                    {% endif %}
+                    </a>
+                    <p class="text-white/50 text-xs uppercase tracking-[0.2em] font-semibold hover:text-white transition-colors">Особистий кабінет</p>
+                </div>
+            {% else %}
+                <div class="flex flex-col items-center mt-12 mb-16">
+                    <p class="text-white/40 text-xs uppercase tracking-[0.2em] mb-4">Ви увійшли як гість</p>
+                    <a href="{% url 'users:login' %}" class="py-3 px-6 bg-white text-black font-bold uppercase text-[10px] tracking-widest rounded-xl">Авторизація</a>
+                </div>
+            {% endif %}
+
+            <form method="GET" action="{% url 'games:home' %}" class="flex flex-col items-center w-full">
+                <input type="hidden" name="search" value="{{ search_query }}">
+                
+                <h3 class="text-white/80 uppercase tracking-[0.3em] text-xs font-semibold mb-10 text-center leading-relaxed">Кількість гравців</h3>
+                
+                <div class="w-full px-2 mb-14">
+                    <input type="range" name="players" min="1" max="10" value="{{ players_count|default:5 }}" 
+                           class="w-full bg-transparent appearance-none cursor-pointer"
+                           oninput="document.getElementById('playerVal').innerText = this.value">
+                    <div class="flex justify-between items-center text-white/30 text-xs mt-5 font-mono">
+                        <span>1</span>
+                        <span id="playerVal" class="text-white text-xl font-black bg-[#320202] px-4 py-1.5 rounded-xl border border-white/5 shadow-md">{{ players_count|default:5 }}</span>
+                        <span>10</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-5 border border-white/10 text-white/90 text-xs uppercase tracking-[0.3em] hover:bg-white hover:text-black hover:border-white transition-all font-bold rounded-xl shadow-lg">
+                    Застосувати
+                </button>
+            </form>
+
+            <div class="mt-auto text-center pt-6">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'users:logout' %}" class="text-white/30 hover:text-white/70 uppercase text-xs tracking-[0.2em] font-medium transition-colors">
+                        Вийти з акаунту
+                    </a>
+                {% endif %}
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="{% static 'games/home.js' %}"></script> 
+</body>
+</html>

@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Alias Game</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'alias/alias.css' %}">
+</head>
+<body class="bg-[#4A0404] min-h-screen text-white flex items-center justify-center p-4">
+
+    <div id="setup-screen" class="w-full max-w-xl bg-[#1a0101]/40 p-10 rounded-[40px] border border-white/5 shadow-2xl">
+        <h1 class="text-center text-xs uppercase tracking-[0.5em] mb-10 text-white/50">Налаштування гри</h1>
+        
+        <div class="space-y-6">
+            <div id="teams-list" class="space-y-3">
+                <input type="text" class="team-input w-full bg-[#1a0101]/60 border border-white/5 rounded-full px-6 py-4 outline-none focus:border-white/20 uppercase text-[10px] tracking-widest" placeholder="Команда 1">
+                <input type="text" class="team-input w-full bg-[#1a0101]/60 border border-white/5 rounded-full px-6 py-4 outline-none focus:border-white/20 uppercase text-[10px] tracking-widest" placeholder="Команда 2">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-[#1a0101]/60 p-4 rounded-[30px] border border-white/5 text-center">
+                    <p class="text-[8px] uppercase tracking-widest text-white/30 mb-2">Час (сек)</p>
+                    <input type="number" id="time-input" value="60" class="bg-transparent text-xl font-bold w-full text-center outline-none">
+                </div>
+                <div class="bg-[#1a0101]/60 p-4 rounded-[30px] border border-white/5 text-center">
+                    <p class="text-[8px] uppercase tracking-widest text-white/30 mb-2">Бали</p>
+                    <input type="number" id="score-input" value="50" class="bg-transparent text-xl font-bold w-full text-center outline-none">
+                </div>
+            </div>
+
+            <button onclick="initGame()" class="w-full bg-white text-black py-5 rounded-full text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-gray-200 transition-all">Готово</button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="hidden w-full max-w-2xl text-center">
+        <p id="team-label" class="text-[10px] uppercase tracking-[0.5em] text-white/40 mb-2">Грає команда</p>
+        <h2 id="active-team" class="text-3xl font-bold uppercase tracking-widest mb-10 text-white"></h2>
+        
+        <div id="timer-display" class="text-7xl font-light mb-12 tabular-nums text-white/80">60</div>
+
+        <div id="ready-block">
+            <button onclick="startRound()" class="w-44 h-44 rounded-full border-2 border-white/10 hover:bg-white hover:text-black transition-all text-[10px] uppercase tracking-[0.3em] font-bold mx-auto flex items-center justify-center">Почати</button>
+        </div>
+
+        <div id="play-block" class="hidden space-y-12">
+            <div class="bg-[#1a0101]/40 py-20 rounded-[50px] border border-white/5 shadow-inner">
+                <h3 id="word-display" class="text-5xl font-medium tracking-wider uppercase">---</h3>
+            </div>
+            <div class="flex gap-6">
+                <button onclick="handleWord(false)" class="flex-1 py-6 rounded-full border border-red-500/20 text-red-500/60 uppercase text-[10px] tracking-[0.3em] hover:bg-red-500 hover:text-white transition-all">Пропустити</button>
+                <button onclick="handleWord(true)" class="flex-1 py-6 rounded-full border border-green-500/20 text-green-500/60 uppercase text-[10px] tracking-[0.3em] hover:bg-green-500 hover:text-white transition-all">Вгадано</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="score-screen" class="hidden w-full max-w-xl bg-[#1a0101]/40 p-12 rounded-[40px] text-center border border-white/5">
+        <h2 id="score-title" class="text-[10px] uppercase tracking-[0.5em] text-white/40 mb-10">Результати раунду</h2>
+        <div id="final-stats" class="space-y-4 mb-10"></div>
+        <button id="action-btn" onclick="nextRound()" class="w-full bg-white text-black py-5 rounded-full text-[10px] font-bold uppercase tracking-[0.4em]">Наступна команда</button>
+    </div>
+
+    <script src="{% static 'alias/alias.js' %}"></script>
+</body>
+</html>

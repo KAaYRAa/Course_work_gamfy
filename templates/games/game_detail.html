@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ game.title }} - Правила</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'games/rules.css' %}">
+</head>
+<body class="bg-[#4A0404] min-h-screen flex flex-col items-center justify-center p-6 text-white font-sans">
+
+    {% csrf_token %} 
+    <a href="{% url 'games:home' %}" class="absolute top-10 left-10 text-white/30 hover:text-white text-xs uppercase tracking-widest transition-all">
+        ← На головну
+    </a>
+
+    <div class="flex items-center gap-6 mb-16">
+        <h1 class="text-6xl font-light tracking-wide">{{ game.title }}</h1>
+        
+        <button onclick="toggleFav({{ game.id }})" id="fav-btn" class="text-5xl transition-all hover:scale-110 focus:outline-none">
+            <span id="heart" style="color: {% if is_favorite %}#ef4444{% else %}white{% endif %};">
+                {% if is_favorite %}♥{% else %}♡{% endif %}
+            </span>
+        </button>
+    </div>
+
+    <div class="w-full max-w-4xl bg-[#1a0101]/40 rounded-[40px] p-16 flex items-center justify-center border border-white/5 shadow-2xl min-h-[350px]">
+        <p class="text-center text-xl leading-loose tracking-wide text-white/80">
+            {% if game.rules %}
+                {{ game.rules }}
+            {% else %}
+                Тут мають бути правила гри...
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="mt-16">
+        {% if game.is_active and game.app_name %}
+            {% with url_name=game.app_name|add:':play' %}
+                <a href="{% url url_name %}" 
+                   class="bg-[#250101] hover:bg-[#320202] text-white px-20 py-6 rounded-full text-[11px] uppercase tracking-[0.4em] font-bold shadow-2xl transition-all hover:scale-105 active:scale-95 block text-center">
+                    ПОЧАТИ ГРУ
+                </a>
+            {% endwith %}
+        {% else %}
+            <button class="bg-[#1a0101]/60 text-white/40 px-20 py-6 rounded-full text-[11px] uppercase tracking-[0.4em] font-bold cursor-not-allowed w-full">
+                В РОЗРОБЦІ
+            </button>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'games/rules.js' %}"></script> 
+</body>
+</html>

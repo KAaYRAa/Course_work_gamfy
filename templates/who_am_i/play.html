@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Хто я? — Gamfy</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'who_am_i/whoami.css' %}">
+</head>
+<body class="bg-[#0f172a] min-h-screen text-white flex flex-col items-center justify-center p-6 font-sans">
+
+    {% csrf_token %} 
+    <a href="{% url 'games:home' %}" class="absolute top-10 left-10 text-white/30 hover:text-white text-[10px] uppercase tracking-widest transition-all">
+        ← На головну
+    </a>
+
+    <div id="setup" class="w-full max-w-md bg-white/5 p-10 rounded-[40px] border border-white/10 shadow-2xl">
+        <h2 class="text-center text-[10px] uppercase tracking-[0.4em] mb-8 opacity-50 font-bold">Налаштування гри</h2>
+        
+        <div class="space-y-6 mb-8">
+            <div>
+                <label class="block text-[9px] uppercase tracking-widest opacity-30 mb-2 ml-4 text-left">Час раунду (сек)</label>
+                <input type="number" id="round-time" value="60" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/40 transition-all font-bold">
+            </div>
+
+            <div>
+                <label class="block text-[9px] uppercase tracking-widest opacity-30 mb-2 ml-4 text-left">Балів для перемоги</label>
+                <input type="number" id="win-score" value="5" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/40 transition-all font-bold">
+            </div>
+            
+            <div id="p-inputs" class="space-y-3 text-left">
+                <label class="block text-[9px] uppercase tracking-widest opacity-30 mb-2 ml-4">Учасники</label>
+                <input type="text" class="p-name w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none" placeholder="Ім'я гравця 1">
+                <input type="text" class="p-name w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none mt-2" placeholder="Ім'я гравця 2">
+            </div>
+        </div>
+
+        <button onclick="addPlayerInput()" class="w-full text-[9px] uppercase tracking-widest opacity-30 hover:opacity-100 mb-6">+ Додати гравця</button>
+        <button onclick="startGame()" class="w-full bg-white text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all">Готово</button>
+    </div>
+
+    <div id="game" class="hidden w-full max-w-2xl text-center">
+        <div id="timer" class="text-7xl font-mono mb-8 text-yellow-400">00:00</div>
+        
+        <div class="relative bg-white/5 p-12 rounded-[50px] border border-white/10 mb-8 shadow-2xl">
+            <h2 id="current-player-name" class="text-sm uppercase tracking-[0.5em] mb-6 text-white/40 font-bold">Гравець</h2>
+            
+            <div class="bg-black/20 py-10 rounded-[30px] border border-white/5 mb-6">
+                <div id="char-card" class="text-5xl font-bold tracking-tight text-white/20 select-none">? ? ?</div>
+            </div>
+
+            <div id="acl-controls" class="flex justify-center gap-4">
+                <button id="btn-reveal" onclick="enforceAccessPolicy(true)" class="bg-white/10 border border-white/20 px-6 py-3 rounded-full text-[9px] font-bold uppercase tracking-widest hover:bg-white/20 transition-all text-yellow-500">
+                    👁️ Показати іншим
+                </button>
+                <button id="btn-hide" onclick="enforceAccessPolicy(false)" class="hidden bg-red-950/40 border border-red-500/20 px-6 py-3 rounded-full text-[9px] font-bold uppercase tracking-widest hover:bg-red-900/40 transition-all text-red-400">
+                    🔒 Приховати від мене
+                </button>
+            </div>
+        </div>
+
+        <div id="action-controls" class="flex gap-4 opacity-40 pointer-events-none transition-all duration-300">
+            <button onclick="handleResult(false)" class="flex-1 bg-red-500/20 border border-red-500/40 py-6 rounded-full uppercase text-[10px] tracking-widest font-bold hover:bg-red-500/40 transition-all">Не вгадав</button>
+            <button onclick="handleResult(true)" class="flex-1 bg-green-500 text-black py-6 rounded-full uppercase text-[10px] tracking-widest font-black hover:scale-105 transition-all">Вгадав!</button>
+        </div>
+    </div>
+
+    <div id="finish" class="hidden text-center w-full max-w-md">
+        <h2 class="text-6xl font-black mb-4 uppercase tracking-tighter text-yellow-500">Фінал</h2>
+        <p id="winner-name" class="text-white/40 mb-10 uppercase tracking-[0.3em] text-[10px]">Переможець</p>
+        <div id="results-table" class="bg-white/5 p-8 rounded-[40px] border border-white/10 space-y-4 mb-10"></div>
+        <button onclick="location.reload()" class="bg-white text-black px-12 py-5 rounded-full font-black uppercase text-[10px] tracking-widest">Нова гра</button>
+    </div>
+
+    <script>
+        window.WHOAMI_GET_CHARACTERS_URL = "{% url 'who_am_i:get_characters' %}";
+    </script>
+
+    <script src="{% static 'who_am_i/whoami.js' %}"></script>
+</body>
+</html>

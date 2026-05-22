@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="min-h-screen bg-gradient-to-b from-[#2a0101] to-[#1a0101] text-white p-6 sm:p-10">
+    
+
+    <a href="{% url 'users:profile' %}" class="inline-flex items-center text-[11px] uppercase tracking-[0.3em] text-white/50 hover:text-red-400 transition-colors mb-12">
+        <span class="mr-2">←</span> Назад до профілю
+    </a>
+
+    <div class="max-w-5xl mx-auto">
+
+        <div class="mb-12 text-center">
+            <h1 class="text-4xl font-black uppercase tracking-[0.6em] text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]">Історія</h1>
+            <div class="h-1 w-20 bg-red-600 mx-auto mt-4 rounded-full"></div>
+        </div>
+
+
+        <div class="overflow-hidden rounded-[35px] border border-white/10 bg-white/[0.03] backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-red-500/10 border-b border-white/10">
+                        <th class="px-10 py-7 uppercase text-[11px] tracking-[0.2em] font-bold text-red-100/60">Коли зіграно</th>
+                        <th class="px-10 py-7 uppercase text-[11px] tracking-[0.2em] font-bold text-red-100/60">В яку гру</th>
+                        <th class="px-10 py-7 uppercase text-[11px] tracking-[0.2em] font-bold text-red-100/60 text-center">Результат</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    {% for session in history %}
+                    <tr class="hover:bg-white/[0.04] transition-all group">
+                        <td class="px-10 py-6">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-medium text-white/80">{{ session.start_time|date:"d.m.Y" }}</span>
+                                <span class="text-[10px] text-white/30 uppercase tracking-tighter">{{ session.start_time|date:"H:i" }}</span>
+                            </div>
+                        </td>
+                        <td class="px-10 py-6">
+                            <span class="text-sm uppercase tracking-widest font-black text-white">
+                                {{ session.game_name }}
+                            </span>
+                        </td>
+                        <td class="px-10 py-6 text-center">
+                            <div class="inline-flex items-center justify-center min-w-[50px] bg-red-500 text-white px-4 py-2 rounded-2xl text-xs font-black shadow-[0_5px_15px_rgba(239,68,68,0.3)]">
+                                {{ session.score }}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-10 py-24 text-center">
+                            <span class="uppercase text-[11px] tracking-[0.3em] text-white/20">Тут поки що порожньо</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Я ніколи не — Gamfy</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'never_have_i_ever/never.css' %}">
+</head>
+<body class="bg-[#080808] min-h-screen text-white flex flex-col items-center justify-center p-6 font-sans">
+
+    {% csrf_token %} 
+    <a href="{% url 'games:home' %}" class="absolute top-10 left-10 text-white/30 hover:text-white text-[10px] uppercase tracking-[0.3em] transition-all z-50">
+        ← Вийти з гри
+    </a>
+
+    <div id="setup" class="text-center">
+        <h1 class="text-5xl font-black mb-10 uppercase tracking-tighter text-pink-500">Я ніколи не...</h1>
+        <button onclick="startGame()" class="bg-white text-black px-16 py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all shadow-2xl">
+            Почати гру
+        </button>
+    </div>
+
+    <div id="game" class="hidden w-full max-w-xl text-center">
+        <div id="game-card" class="bg-white/5 p-12 rounded-[50px] border border-white/10 shadow-2xl card-anim mb-10">
+            <h2 class="text-[10px] uppercase tracking-[0.5em] mb-10 text-pink-400 font-bold">Я ніколи не...</h2>
+            <p id="question-text" class="text-3xl font-bold leading-tight mb-12">Завантаження питання...</p>
+            
+            <div class="pt-8 border-t border-white/5">
+                <span class="text-[9px] uppercase tracking-widest opacity-30 block mb-4">Покарання, якщо робив:</span>
+                <p id="action-text" class="text-lg italic text-pink-200/70">...</p>
+            </div>
+        </div>
+
+        <button onclick="nextRound()" class="w-full bg-pink-600 text-white py-6 rounded-[30px] font-black uppercase tracking-widest text-[11px] hover:bg-pink-500 transition-all shadow-lg">
+            Наступне питання →
+        </button>
+    </div>
+
+    <script>
+        window.NEVER_GET_DATA_URL = "{% url 'never_have_i_ever:get_data' %}";
+    </script>
+
+    <script src="{% static 'never_have_i_ever/never.js' %}"></script>
+</body>
+</html>

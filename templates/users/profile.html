@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Мій профіль</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-[#4A0404] min-h-screen text-white font-sans flex items-center justify-center p-4 md:p-6">
+
+    <main class="w-full max-w-4xl bg-[#1a0101]/40 rounded-[30px] md:rounded-[40px] p-6 md:p-12 border border-white/5 shadow-2xl relative mt-4">
+        
+        <a href="{% url 'games:home' %}" class="absolute top-6 left-6 text-white/40 hover:text-white text-[10px] uppercase tracking-widest transition-all">
+            ← Назад
+        </a>
+
+        <div class="flex flex-col md:flex-row gap-10 md:gap-16 mt-6 md:mt-0">
+            
+            <div class="flex-1 flex flex-col gap-8 md:gap-10">
+                
+                <form method="POST" enctype="multipart/form-data" class="flex flex-col gap-6">
+                    {% csrf_token %}
+                    
+                    <div class="flex flex-col sm:flex-row items-center gap-6 justify-center sm:justify-start">
+                        <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#320202] border border-white/10 overflow-hidden shadow-inner flex items-center justify-center flex-shrink-0">
+                            {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-[8px] text-white/20 uppercase tracking-widest">НЕМАЄ ФОТО</div>
+                            {% endif %}
+                        </div>
+                        <label class="cursor-pointer bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg text-[10px] uppercase tracking-widest transition-all text-center">
+                            Змінити фото
+                            <input type="file" name="avatar" class="hidden" accept="image/*">
+                        </label>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[9px] uppercase tracking-widest text-white/30 ml-4">Ваш нікнейм</label>
+                        <input type="text" name="username" value="{{ user.username }}" 
+                               class="w-full bg-[#1a0101]/60 border border-white/5 rounded-full px-6 py-3 outline-none focus:border-white/20 transition-all tracking-widest text-white text-sm">
+                    </div>
+
+                    <button type="submit" class="w-full bg-white text-black py-4 rounded-full text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-gray-200 transition-all shadow-lg">
+                        Зберегти зміни
+                    </button>
+                </form>
+
+                <div class="border-t border-white/5 w-full"></div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="text-[9px] uppercase tracking-widest text-white/30 ml-4">Пошук інших гравців</label>
+                    <form action="{% url 'users:search_users' %}" method="GET" class="flex gap-2 w-full relative">
+                        <input type="text" name="user_search" placeholder="Введіть нікнейм..." 
+                               class="w-full bg-[#1a0101]/60 border border-white/5 rounded-full pl-6 pr-24 md:pr-28 py-3 outline-none focus:border-white/20 transition-all tracking-widest text-white text-xs">
+                        
+                        <button type="submit" class="absolute right-1 top-1 bottom-1 bg-white/10 hover:bg-white/20 text-white px-4 md:px-5 rounded-full text-[8px] md:text-[9px] uppercase tracking-widest font-bold transition-all">
+                            Знайти
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="flex-1 border-t md:border-t-0 md:border-l border-white/5 pt-8 md:pt-0 md:pl-10">
+                <h2 class="text-xs uppercase tracking-[0.4em] mb-6 md:mb-10 text-white/60 text-center">Улюблені ігри</h2>
+                
+                <div class="flex flex-col gap-4">
+                    {% for game in favorite_games %}
+                        <div id="fav-item-{{ game.id }}" class="bg-[#1a0101]/40 p-5 md:p-6 rounded-[24px] md:rounded-[30px] border border-white/5 flex justify-between items-center group hover:bg-[#1a0101]/60 hover:border-white/10 transition-all">
+                            
+                            <a href="{{ game.url }}" class="flex flex-col text-left flex-1">
+                                <span class="text-[10px] uppercase tracking-widest font-bold text-white">
+                                    {{ game.name }}
+                                </span>
+                                <span class="text-[7px] uppercase tracking-[0.2em] opacity-30 mt-1">
+                                    Швидкий запуск →
+                                </span>
+                            </a>
+
+                            <button onclick="removeFav({{ game.id }})" class="text-red-500 hover:scale-125 transition-all text-sm focus:outline-none px-2">
+                                ♥
+                            </button>
+                        </div>
+                    {% empty %}
+                        <p class="text-center text-white/20 text-[10px] uppercase mt-6 italic">Список порожній</p>
+                    {% endfor %}
+
+                    <a href="{% url 'users:user_history' %}" class="mt-2 flex items-center justify-between bg-white/5 border border-white/10 rounded-[24px] md:rounded-[30px] p-5 md:p-6 hover:bg-white/10 transition-all group">
+                        <div class="flex flex-col text-left">
+                            <span class="uppercase font-black text-[10px] tracking-widest">Історія ігор</span>
+                            <span class="uppercase text-[8px] opacity-30 tracking-widest mt-1">Твої результати</span>
+                        </div>
+                        <span class="text-white/20 group-hover:text-white group-hover:translate-x-1 transition-all">→</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="{% static 'users/profile.js' %}"></script>
+</body>
+</html>

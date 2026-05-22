@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Данетки — Gamfy</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'danetki/danetki.css' %}">
+</head>
+<body class="bg-[#0a0a0a] min-h-screen text-white flex flex-col items-center justify-center p-6 font-sans">
+
+    {% csrf_token %} 
+    <a href="{% url 'games:home' %}" class="absolute top-10 left-10 text-white/40 hover:text-white text-[10px] uppercase tracking-widest transition-all">← На головну</a>
+
+    <div id="host-screen" class="w-full max-w-2xl bg-white/5 p-12 rounded-[50px] border border-white/10 shadow-2xl text-center fade-in">
+        <h2 class="text-center text-[10px] uppercase tracking-[0.5em] mb-8 text-purple-500 font-bold">Тільки для ведучого</h2>
+        <div id="full-story-host" class="mb-10 text-xl font-medium leading-relaxed italic opacity-90 text-left px-4">
+            Завантаження історії...
+        </div>
+        <p class="text-[9px] uppercase tracking-widest opacity-30 mb-10">Прочитайте повну історію про себе та натисніть кнопку нижче</p>
+        <button onclick="gameContext.nextState()" class="bg-white text-black px-16 py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 active:scale-95 transition-all">Готово, я ведучий</button>
+    </div>
+
+    <div id="game-screen" class="hidden w-full max-w-2xl text-center fade-in">
+        <div class="mb-6">
+            <span id="category-tag" class="bg-purple-500/20 text-purple-400 px-4 py-1 rounded-full text-[9px] uppercase tracking-widest font-bold">Категорія</span>
+        </div>
+        <div class="bg-white/5 p-12 rounded-[50px] border border-white/10 mb-10 relative text-center">
+            <h3 class="text-[10px] uppercase tracking-[0.5em] mb-8 opacity-30">Ситуація</h3>
+            <p id="puzzle-text" class="text-3xl font-bold tracking-tight leading-snug">...</p>
+        </div>
+
+        <div id="controls">
+            <p class="text-[10px] uppercase tracking-widest opacity-40 mb-8">Ставте питання, на які можна відповісти "Так" або "Ні"</p>
+            <button onclick="gameContext.nextState()" class="bg-purple-600 text-white px-20 py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:bg-purple-500 transition-all shadow-lg">Ми вгадали!</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden w-full max-w-2xl text-center fade-in">
+        <h2 class="text-6xl font-black mb-10 uppercase italic text-purple-500 tracking-tighter">Перемога</h2>
+        <div class="bg-white/5 p-12 rounded-[50px] border border-white/10 mb-12 text-left">
+            <p id="full-story-final" class="text-xl leading-relaxed opacity-80"></p>
+        </div>
+        <button onclick="location.reload()" class="bg-white text-black px-16 py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-110 transition-all">Почати заново</button>
+    </div>
+
+    <script>
+        window.DANETKI_DATA_URL = "{% url 'danetki:get_data' %}";
+    </script>
+
+    <script src="{% static 'danetki/danetki.js' %}"></script>
+</body>
+</html>

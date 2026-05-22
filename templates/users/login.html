@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Вхід{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-[#2a0101] to-[#1a0101] flex items-center justify-center p-6">
+    <div class="w-full max-w-md bg-white/[0.03] backdrop-blur-md border border-white/10 p-10 rounded-[40px] shadow-2xl">
+        
+        <h1 class="text-3xl font-black uppercase tracking-[0.4em] text-center text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.3)] mb-10">
+            Авторизація
+        </h1>
+        
+        <form method="post" class="flex flex-col gap-6">
+            {% csrf_token %}
+
+            {% if messages %}
+                <div class="flex flex-col gap-2">
+                    {% for message in messages %}
+                        <div class="p-4 rounded-2xl text-xs font-bold uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30 text-center">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="flex flex-col gap-2">
+                <label for="username" class="text-[10px] uppercase tracking-[0.2em] font-bold text-white/50 pl-2">Логін</label>
+                <input type="text" name="username" id="username" placeholder="Введіть логін" required
+                       class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors">
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label for="password" class="text-[10px] uppercase tracking-[0.2em] font-bold text-white/50 pl-2">Пароль</label>
+                <input type="password" name="password" id="password" placeholder="••••••••" required
+                       class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white placeholder-white/30 focus:outline-none focus:border-red-500 transition-colors">
+            </div>
+
+            <button type="submit" 
+                    class="w-full bg-white text-[#1a0101] font-black uppercase tracking-widest py-4 rounded-2xl hover:bg-red-500 hover:text-white shadow-lg transition-all duration-300 mt-4 text-sm">
+                Увійти
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <p class="text-[11px] uppercase tracking-wider text-white/40">
+                Ще не маєте акаунта? 
+                <a href="{% url 'users:register' %}" class="text-yellow-500 hover:text-yellow-400 font-bold ml-1 transition-colors">
+                    Реєстрація
+                </a>
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
